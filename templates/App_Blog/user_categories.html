@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title_block %} Home {% endblock  %}
+{% load custom_filters %}
+{% block body_block %}
+
+<div class="container">
+  <div class="justify-content-center align-items-center">
+    {% if user.is_authenticated %}
+    <div class="row row-cols-1 row-cols-md-3 g-4 my-3">
+      {% for category in user.user_category.all %}
+      <div class="col">
+        <div class="card h-100">
+          <img src="/media/{{ category.category_image }}" class="card-img-top img-fluid mx-auto d-block" alt="{{ category.category_name }}" width='250px'>
+          <div class="card-body">
+            <h5 class="card-title">{{ category.category_name }}</h5>
+            {% comment %} <p class="card-text"> {{ blog.blog_content|range_filter|truncatewords:30 }} </p> {% endcomment %}
+             <div class="d-flex">
+                 <a href="{% url 'Blog:update_category' pk=category.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                 <a href="{% url 'Blog:delete_category' pk=category.pk %}" class="btn btn-danger btn-sm ms-2">Delete</a>  
+             </div>
+          </div>
+          <div class="card-footer">
+            {% comment %} <small class="text-body-secondary">Last updated: {{ blog.update_date }}</small> {% endcomment %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% comment %} <nav aria-label="Page navigation example ">
+      <ul class="pagination justify-content-center">
+      
+
+      {% if blogs.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ blogs.previous_page_number }}">Previous</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <a class="page-link">Previous</a>
+        </li>
+      {% endif %}
+  
+
+      {% for blog_page in blogs.paginator.page_range %}
+          {% if blogs.number == blog_page %}
+         
+              <li class="page-item active"><a class="page-link" href="?page={{ blog_page }}">{{ blog_page }}</a></li>
+          {% else %}
+    
+              <li class="page-item"><a class="page-link" href="?page={{ blog_page }}">{{ blog_page }}</a></li>
+          {% endif %}
+      {% endfor %}
+  
+      {% if blogs.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ blogs.next_page_number }}">Next</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <a class="page-link">Next</a>
+        </li>
+      {% endif %}
+      
+      </ul>
+  </nav> {% endcomment %}
+   
+  </div>
+</div>
+{% else %}
+<p>No Post in this category yet.</p>
+<a href="{% url 'Blog:create_blog' %}" class="btn btn-primary btn-sm">Add Post</a>
+{% endif %}
+
+
+{% endblock  %}

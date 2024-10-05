@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title_block %} New Category {% endblock  %}
+{% load crispy_forms_tags %}
+{% block body_block %}
+    <form method="POST" enctype="multipart/form-data">
+        {{form|crispy}}
+        {%csrf_token%}
+        <button type="submit" class="btn btn-info btn-sm">Add new category</button>
+    </form>
+{% endblock  %}

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% block title_block %} {{ user }} {% endblock  %}
+
+{% block body_block %}
+    {% comment %} {% for blog in user.post_author.all %}
+
+        <div class="row">
+            <div class="col-sm-4">
+                <h6>{{ blog.blog_title }}</h6>
+                <img src="/media/{{blog.blog_image}}" class="img-fluid d-block" width="100" alt="">
+            </div>
+            <div class="col-sm-8">
+                <p>{{ blog.blog_content|linebreaks|range_filter|safe }}</p>
+                <a href="{% url 'Blog:blog_details' slug=blog.slug %}">Read more</a>
+                <br>
+                <br>
+                <div class="d-flex">
+                    <a href="{% url 'Blog:edit_blog' pk=blog.pk %}" class="btn btn-warning btn-sm ">Edit Blog</a>
+                    <a  href="{% url 'Blog:delete_blog' pk=blog.pk %}" class="btn btn-danger btn-sm ms-2" >Delete Blog</a>
+                </div>
+            </div>
+        </div>
+    {% endfor %} {% endcomment %}
+    <div class="container">
+        <div class="justify-content-center align-items-center">
+          {% comment %} {% if user.is_authenticated %} {% endcomment %}
+          <div class="row row-cols-1 row-cols-md-3 g-4 my-3">
+            {% for blog in blogs %}
+            <div class="col">
+              <div class="card h-100">
+                <img src="/media/{{ blog.blog_image }}" class="card-img-top img-fluid mx-auto d-block" alt="{{ blog.blot_title}}" width='250px'>
+                <div class="card-body">
+                  <h5 class="card-title">{{ blog.blog_title }}</h5>
+                  <div class="d-flex">
+                    <a href="{% url 'Blog:edit_blog' pk=blog.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="{% url 'Blog:delete_blog' pk=blog.pk %}" class="btn btn-danger btn-sm ms-2">Delete</a>
+                  </div>
+                  <p class="card-text"> {{ blog.blog_content|range_filter|truncatewords:30 }} </p>
+                  <a href="{% url 'Blog:blog_details' slug=blog.slug %}" class="btn btn-primary btn-sm">Read more</a>
+                </div>
+                <div class="card-footer">
+                  <small class="text-body-secondary">Last updated: {{ blog.update_date }}</small>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          <nav aria-label="Page navigation example ">
+            <ul class="pagination justify-content-center">
+            
+            <!-- Previous Page -->
+            {% if blogs.has_previous %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ blogs.previous_page_number }}">Previous</a>
+              </li>
+            {% else %}
+              <li class="page-item disabled">
+                <a class="page-link">Previous</a>
+              </li>
+            {% endif %}
+        
+            <!-- Page Numbers -->
+            {% for blog_page in blogs.paginator.page_range %}
+                {% if blogs.number == blog_page %}
+                    <!-- Current page, make it active and disable the link -->
+                    <li class="page-item active"><a class="page-link" href="?page={{ blog_page }}">{{ blog_page }}</a></li>
+                {% else %}
+                    <!-- Other pages -->
+                    <li class="page-item"><a class="page-link" href="?page={{ blog_page }}">{{ blog_page }}</a></li>
+                {% endif %}
+            {% endfor %}
+        
+            <!-- Next Page -->
+            {% if blogs.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ blogs.next_page_number }}">Next</a>
+              </li>
+            {% else %}
+              <li class="page-item disabled">
+                <a class="page-link">Next</a>
+              </li>
+            {% endif %}
+            
+            </ul>
+        </nav>
+          {% comment %} {% endif %} {% endcomment %}
+         
+        </div>
+      </div>
+{% endblock  %}

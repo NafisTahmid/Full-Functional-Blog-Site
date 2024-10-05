@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title_block %} All Cities {% endblock  %}
+
+{% block body_block %}
+   
+    <div class="row row-cols-1 row-cols-md-3 g-4 my-3">
+        {% for category in categories %}
+        <div class="col">
+          <div class="card h-100">
+            <img src="/media/{{ category.category_image }}" class="card-img-top img-fluid mx-auto d-block" alt="{{ category.category_image}}" width='100px'>
+            <div class="card-body">
+              <h5 class="card-title text-center">{{ category.category_name }}</h5>
+              <a href="{% url 'Blog:show_all_categories' pk=category.pk %}" class="btn btn-primary btn-sm">View all</a>
+            </div>
+           
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    
+{% endblock  %}
