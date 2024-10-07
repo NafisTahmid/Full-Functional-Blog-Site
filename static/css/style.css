@@ -1,3 +1,12 @@
 ul {
     list-style:none;
 }
+
+.query-form {
+    width: 250px;
+    border: 1px solid red;
+    background: black;
+}
+h2 {
+    color: red;
+}

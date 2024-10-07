@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title_block %}
+    Ask AI
+{% endblock  %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block css_block %}
+
+   .query-form {
+    {% comment %} width: 550px; {% endcomment %}
+    padding: 30px;
+   }
+{% endblock  %}
+{% block body_block %}
+        <img src="/media/guide.avif" class="img-fluid mx-auto d-block" alt="">
+        <div class="query-form mx-auto">
+            <center class="">
+                <form method="POST">
+                    {{ form | crispy }}
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm" style="width:100%">Ask Question</button>
+                </form>
+            </center>
+
+        </div>
+
+        {% if answer is None %}
+        <p></p>
+        {% else %}
+        <p class="text-center">{{ answer }}</p>
+        {% endif %}
+   
+
+{% endblock  %}

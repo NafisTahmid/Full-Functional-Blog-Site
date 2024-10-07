@@ -13,6 +13,11 @@
     {% comment %} BOOTSTRAP (JS) {% endcomment %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous" defer></script>
     <link rel="stylesheet" href="{% static 'css/style.css'%}">
+
+    <style>
+
+        {% block css_block %}{% endblock %}
+    </style>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg bg-danger">
@@ -23,10 +28,17 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto text-center">
+        
+          {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link text-light" href="{% url 'Blog:user_location' %}">Your Location</a>
+          </li>
           <li class="nav-item">
             <a class="nav-link text-light" href="{% url 'Blog:all_categories' %}">Cities</a>
           </li>
-          {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link text-light" href="{% url 'Blog:query' %}">Ask Travel Guide</a>
+          </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               @{{user.username}}

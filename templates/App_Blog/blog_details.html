@@ -22,6 +22,11 @@
     <div class="my-3">
         <img src="/media/{{ blog.blog_image }}" alt={{ blog.blog_title }} class="img-fluid mx-auto d-block" width="400">
 
+        <h5>Best meal</h5>
+        <p>Meal name: {{ meal_name }} </p>
+        <small>Recipe: {{meal_recipe}}</small>
+        <hr>
+
         <div class="">
             <p class="text-justify">{{blog.blog_content|linebreaks}}</p>
         </div>

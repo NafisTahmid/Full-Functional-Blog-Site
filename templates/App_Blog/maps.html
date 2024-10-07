@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title_block %} User Location {% endblock  %}
+
+{% block body_block %}
+{% if url %}
+{{ url }}
+{% else %}
+<small><a href="{% url 'Blog:all_categories' %}" class="">View Cities</a></small>
+{% endif %}
+{% endblock  %}

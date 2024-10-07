@@ -18,7 +18,10 @@ urlpatterns = [
     path('show-all-categories/<pk>', views.show_all_categories, name='show_all_categories'),
     path('update-category/<pk>', views.EditCategory.as_view(), name='update_category'),
     path('user-categories/', views.MyCategories.as_view(), name='user_categories'),
-    path('delete-category/<pk>', views.DeleteCategory.as_view(), name='delete_category')
+    path('delete-category/<pk>', views.DeleteCategory.as_view(), name='delete_category'),
+    path('query/', views.ask_ai, name="query"),
+    path('user-location/', views.know_location, name='user_location')
+    
     # path('category/<str:category>/', views.category_view, name='blog_category'),
     # path('all-categories/', views.AllCategories.as_view(), name="all_categories"),
     # path('category_view/<int:category>', views.category_view, name="category_view")

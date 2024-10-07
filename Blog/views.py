@@ -1,12 +1,17 @@
 from django.shortcuts import render, HttpResponseRedirect
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView, TemplateView, View
-from Blog.models import Blog, Comment, Likes, Category
+from Blog.models import Blog, Comment, Likes, Category, Query
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 import uuid
-from Blog.forms import CommentForm
+from Blog.forms import CommentForm, QueryForm
 from django.core.paginator import Paginator
+import openai
+from selenium import webdriver
+from time import sleep
+import requests
+openai.api_key = ' sk-PuUKSCZsPcDQ5XlXuja5niBWpBF4rqlaeCv3tMVT_FT3BlbkFJeywnPg7aIuhWYmWIG9U6RNUR5Z6raA_hxqaD1WK_cA'
 
 # Create your views here.
 # Create your views here.
@@ -56,7 +61,13 @@ def blog_details(request, slug):
             comment.blog = blog
             comment.save()
             return HttpResponseRedirect(reverse('Blog:blog_details', kwargs={'slug': slug}))
-    return render(request, 'App_Blog/blog_details.html', context={'blog':blog, 'form':comment, 'liked':liked})
+        
+    app_url = "https://www.themealdb.com/api/json/v1/1/random.php"
+    r = requests.get(app_url)
+    meal = r.json().get("meals")
+    meal_name = meal[0].get('strMeal')
+    meal_recipe = meal[0].get('strInstructions')
+    return render(request, 'App_Blog/blog_details.html', context={'blog':blog, 'form':comment, 'liked':liked, 'meal_name':meal_name, 'meal_recipe':meal_recipe})
 
 @login_required
 def liked(request, pk):
@@ -174,3 +185,77 @@ class DeleteCategory(LoginRequiredMixin, DeleteView):
 
      def get_success_url(self, **kwargs):
         return reverse_lazy("Blog:delete_success")
+     
+
+
+@login_required
+def ask_ai(request):
+    def oai_answer(prompt):
+        response = openai.ChatCompletion.create(
+            model="gpt-4",  # Use the correct model name
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.7,
+            max_tokens=100,  # Increase this as per your requirements
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+        )
+        output = response['choices'][0]['message']['content']
+        return output
+
+    form = QueryForm()
+    answer = ""
+    if request.method == 'POST':
+        form = QueryForm(request.POST)
+        if form.is_valid():
+            query = form.save(commit=False)
+            query.user = request.user
+            query.save()
+            question = query.query
+            answer = oai_answer(question)
+            
+    return render(request, "App_Blog/query.html", context={'form': form, 'answer': answer})
+
+# @login_required
+# def ask_ai(request):
+#     def oai_answer(prompt): 
+#         response = openai.Completion.create(
+#             model="gpt-4o-mini",
+#             prompt=prompt,
+#             temperature=0.7,
+#             max_tokens=1,
+#             top_p=1,
+#             frequency_penalty=0,
+#             presence_penalty=0
+#         )
+#         output = response.get('choices')[0].get('text')
+#         return output
+#     form = QueryForm()
+#     answer = ""
+#     if request.method == 'POST':
+#         form = QueryForm(request.POST)
+#         if form.is_valid():
+#             query = form.save(commit=False)
+#             query.user = request.user
+#             query.save()
+#             question = query.query
+#             answer = oai_answer(question)
+#     return render(request, "App_Blog/query.html", context={'form':form, 'answer':answer})
+
+@login_required
+def know_location(request):
+    driver = webdriver.Chrome()
+    url = driver.get('https://www.google.com/maps/@23.7745566,90.4408048,15z?entry=ttu&g_ep=EgoyMDI0MTAwMi4xIKXMDSoASAFQAw%3D%3D')
+    sleep(3)
+    return render(request, 'App_Blog/maps.html', context={'url':url})
+
+
+def homepage_banner(request):
+    app_url = "https://www.themealdb.com/api/json/v1/1/lookup.php?i=52772"
+    r = requests.get(app_url)
+    meal = r.json().get("meals")
+    meal_name = meal[0].get('strMeal')
+    meal_instructions = meal[0].get('strInstructions')
+    return render(request, 'base.html', context={'meal_name':meal_name, 'meal_instructions':meal_instructions})
+
+	
