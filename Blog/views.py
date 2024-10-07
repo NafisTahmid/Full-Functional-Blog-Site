@@ -11,7 +11,6 @@ import openai
 from selenium import webdriver
 from time import sleep
 import requests
-openai.api_key = ' sk-PuUKSCZsPcDQ5XlXuja5niBWpBF4rqlaeCv3tMVT_FT3BlbkFJeywnPg7aIuhWYmWIG9U6RNUR5Z6raA_hxqaD1WK_cA'
 
 # Create your views here.
 # Create your views here.
